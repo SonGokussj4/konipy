@@ -27,3 +27,10 @@ The program should include:
 - Readme file describing how to work with it
 
 ```
+
+
+# Q?
+
+- lib errors can be fixed by `apt-get install libsm6 libxext6 libxrender-dev`
+- or installing `opencv-python-headless` instead of `opencv-python`?
+- or <https://pypi.org/project/opencv-contrib-python-headless/> ?

@@ -21,14 +21,20 @@ def main():
     # Assign random IDs to the bounding boxes in first xml
     first_picture = DataFrame(xmls[0], shop_path)
     first_picture.assign_ids()
-    print(f'first_picture: {first_picture}')
+    print(f'[ DEBUG ] first: {first_picture}')
 
     # Send the first picture to the server
 
     # Resolve remaining xmls and assign IDs to the bounding boxes closes to the centroids
+    previous_picture = first_picture
     for xml in xmls:
-        df = DataFrame(xml, shop_path)
-        df.assign_nearest_ids(fist_picture_boxes=first_picture.boxes)
+        current_picture = DataFrame(xml, shop_path)
+        current_picture.assign_nearest_ids(previous_boxes=previous_picture.boxes)
+        print(f'[ DEBUG ] current: {current_picture}')
+        previous_picture = current_picture
+
+        # Send the current picture to the server
+
 
 if __name__ == "__main__":
     main()

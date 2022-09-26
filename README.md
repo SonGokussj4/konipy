@@ -16,7 +16,7 @@ docker-compose build
 ## Run
 
 ```bash
-docker-compose visual up -d
+docker-compose up visual -d
 docker-compose run --rm track 
 ```
 

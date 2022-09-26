@@ -10,6 +10,7 @@
 ```bash
 git clone
 cd konipy
+cp comp_tracking/.env.example comp_tracking/.env
 docker-compose build
 ```
 

@@ -1,6 +1,21 @@
 version: '2'
 
-# Python app builded
 services:
-  app:
-    build: .
+
+  track:
+    build: comp_tracking/
+    networks:
+      - konipynet
+
+  visual:
+    build: comp_visualising/
+    restart: unless-stopped
+    networks:
+      - konipynet
+    ports:
+      - "8989:8989"
+
+
+networks:
+  konipynet:
+    driver: bridge

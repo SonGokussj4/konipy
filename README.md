@@ -40,6 +40,7 @@ cd comp_tracking
 python3 -m venv .venv
 source .venv/bin/activate | .venv/Scripts/activate # Windows
 python -m pip install -r requirements.txt
+cp .env.example .env
 python main.py
 ```
 

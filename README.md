@@ -1,5 +1,47 @@
 # KoniPy
 
+## Requirements
+
+- Docker (<https://docs.docker.com/install/>)
+- docker-compose (<https://docs.docker.com/compose/install/>)
+
+## Install
+
+```bash
+git clone
+cd konipy
+docker-compose build
+```
+
+## Run
+
+```bash
+docker-compose visual up -d
+docker-compose run --rm track 
+```
+
+## DEV
+
+### Visualising component (needs to RUN first on background)
+
+```bash
+cd comp_visualising
+python3 -m venv .venv
+source .venv/bin/activate | .venv/Scripts/activate # Windows
+python -m pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8989
+```
+
+### Tracking component
+
+```bash
+cd comp_tracking
+python3 -m venv .venv
+source .venv/bin/activate | .venv/Scripts/activate # Windows
+python -m pip install -r requirements.txt
+python main.py
+```
+
 ## Task
 
 ```r

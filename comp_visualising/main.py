@@ -3,10 +3,11 @@
 import json
 import os
 from dataclasses import dataclass, field
-from fastapi import FastAPI, Response, HTTPException, Request
 from pathlib import Path
+
 import uvicorn
 import cv2
+from fastapi import FastAPI, Response, HTTPException, Request
 
 app = FastAPI()
 
@@ -68,6 +69,38 @@ async def post_test(data: Request) -> Response:
     )
 
 
+@app.post("/message")
+async def message(data: Request) -> Response:
+    """Get message"""
+    _data = await data.json()
+    msg = _data.get("message", "")
+
+    if msg.lower() == "finished":
+        response = create_video()
+        return response
+
+    return Response(content=json.dumps({"message": "no message received"}), media_type="application/json")
+
+
+def create_video():
+    """Create video from images"""
+    # Convert images to video
+    images = [img for img in os.listdir(SHOP_DIR) if img.endswith("OUTPUT.jpg")]
+    frame = cv2.imread(os.path.join(SHOP_DIR, images[0]))
+    height, width, _ = frame.shape
+
+    video_path = f"{SHOP_DIR}/video.mp4v"
+    size = (width, height)
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # desired codec (must be available at runtime)
+    video = cv2.VideoWriter(video_path, fourcc, VIDEO_FPS, size)
+
+    for image in images:
+        video.write(cv2.imread(os.path.join(SHOP_DIR, image)))
+
+    cv2.destroyAllWindows()
+    video.release()
+
+    return Response(content=json.dumps({"video_path": video_path, "name": Path(video_path).stem, "message": "ok"}))
 
 
 def draw_bounding_box(image, box, color):

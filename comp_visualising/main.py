@@ -12,10 +12,24 @@ from fastapi import FastAPI, Response, HTTPException, Request
 from loguru import logger as log
 from logger_config import init_logging
 
+DEBUG = "True"
+
+if DEBUG == "True":
+    LOG_LEVEL = "debug"
+    HOT_RELOAD = bool("True")
+else:
+    LOG_LEVEL = "info"
+    HOT_RELOAD = bool("False")
+
 # CONSTANTS
+# App
+PORT = 8989
+HOST = "0.0.0.0"
+# Paths
 CURDIR = Path(__file__).parent
 PARENT_DIR = CURDIR.parent
 SHOP_DIR = PARENT_DIR / "shop"
+# Drawing and video
 LABEL_FONT_SCALE = 0.5
 LABEL_FONT_THICKNESS = 1
 VIDEO_FPS = 5
@@ -147,3 +161,7 @@ def draw_label(image, box, _id, color):
     )
 
 
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host=HOST, port=PORT, log_level=LOG_LEVEL, reload=HOT_RELOAD)

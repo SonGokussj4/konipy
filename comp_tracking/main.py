@@ -33,6 +33,7 @@ COLOR_PALLETE = {
     4: (255, 255, 0),
     5: (255, 0, 0),
 }
+VIDEO_FPS = 5
 
 
 def main():
@@ -105,11 +106,26 @@ def main():
         # Save image
         cv2.imwrite(f"{output_dir / picture.img_name}_OUTPUT.jpg", image)
 
+    # Convert images to video
+    images = [img for img in os.listdir(output_dir) if img.endswith("OUTPUT.jpg")]
+    frame = cv2.imread(os.path.join(output_dir, images[0]))
+    height, width, layers = frame.shape
+
+    video_path = f"{output_dir}/video.mp4v"
+    size = (width, height)
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # desired codec (must be available at runtime)
+    video = cv2.VideoWriter(video_path , fourcc, VIDEO_FPS, size)
+
+    for image in images:
+        video.write(cv2.imread(os.path.join(output_dir, image)))
+
+    cv2.destroyAllWindows()
+    video.release()
 
     raise SystemExit
 
     # Resolve remaining xmls and assign IDs to the bounding boxes closes to the centroids
-    previous_picture = first_picture
+    previous_picture = picture
     for xml in xmls:
         current_picture = DataFrame(xml, shop_path)
         current_picture.assign_nearest_ids(previous_boxes=previous_picture.boxes)

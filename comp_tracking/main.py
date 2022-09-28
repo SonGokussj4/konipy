@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 from dataloader import load_images_from_dir, load_xml_from_dir, DataFrame
 
+import cv2
+
 # ENVIROMENT VARIABLES
 load_dotenv()
 
@@ -20,6 +22,15 @@ else:
 
 # CONSTANTS
 CURDIR = Path(__file__).parent
+# Color pallete - BGR format (OpenCV)
+COLOR_PALLETE = {
+    0: (0, 0, 255),
+    1: (0, 255, 0),
+    2: (0, 255, 255),
+    3: (255, 0, 255),
+    4: (255, 255, 0),
+    5: (255, 0, 0),
+}
 
 
 def main():
@@ -41,6 +52,24 @@ def main():
 
     # Send the first picture to the server
     send_to_server(first_picture.to_json())
+
+    # TEST_IMAGE_PATH = shop_path / "TEST_IMAGE.jpg"
+    TEST_IMAGE_PATH = shop_path / first_picture.img_name
+    print(f"[ DEBUG ] TEST_IMAGE_PATH: {TEST_IMAGE_PATH}")
+
+    image = cv2.imread(TEST_IMAGE_PATH.as_posix())
+
+    for item in first_picture.boxes:
+        box = item["box"]
+        color = COLOR_PALLETE[_id]
+        # Create a rectangle around the object
+        box_start_point = (int(box[0]), int(box[1]))  # left top corner
+        box_end_point = (int(box[2]), int(box[3]))  # right bottom corner
+        cv2.rectangle(img=image, pt1=box_start_point, pt2=box_end_point, color=color, thickness=2)
+
+
+    # Save image
+    cv2.imwrite(f"{first_picture.img_name}_OUTPUT.jpg", image)
 
     raise SystemExit
 

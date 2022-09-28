@@ -13,7 +13,7 @@ class DataFrame:
     Encapsulate data about image and bounding boxes.
     """
 
-    def __init__(self, xml: str, path: str):
+    def __init__(self, xml: str, path: str | Path):
         self.img_name, self.boxes = self._extract_info(xml)
         self.img = self._load_image(path)
 

@@ -9,7 +9,8 @@ import uvicorn
 import cv2
 from fastapi import FastAPI, Response, HTTPException, Request
 
-app = FastAPI()
+from loguru import logger as log
+from logger_config import init_logging
 
 # CONSTANTS
 CURDIR = Path(__file__).parent
@@ -34,6 +35,8 @@ COLOR_PALLETE = {
 
 app = FastAPI(title="Visualising API", description="API for visualising data", version="0.1.0")
 
+init_logging()
+
 
 
 @app.get("/", status_code=200, include_in_schema=False)
@@ -47,7 +50,7 @@ async def post_test(data: Request) -> Response:
     picture = await data.json()
 
     IMAGE_PATH = SHOP_DIR / picture.get("img_name")
-    print(f"[ DEBUG ] IMAGE_PATH: {IMAGE_PATH}")
+    log.debug(f"IMAGE_PATH: {IMAGE_PATH}")
 
     image = cv2.imread(IMAGE_PATH.as_posix())
 

@@ -30,7 +30,7 @@ cd comp_visualising
 python3 -m venv .venv
 source .venv/bin/activate | .venv/Scripts/activate # Windows
 python -m pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8989
+python main.py
 ```
 
 ### Tracking component

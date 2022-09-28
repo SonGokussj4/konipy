@@ -22,6 +22,8 @@ else:
 
 # CONSTANTS
 CURDIR = Path(__file__).parent
+LABEL_FONT_SCALE = 0.5
+LABEL_FONT_THICKNESS = 1
 # Color pallete - BGR format (OpenCV)
 COLOR_PALLETE = {
     0: (0, 0, 255),
@@ -61,12 +63,43 @@ def main():
 
     for item in first_picture.boxes:
         box = item["box"]
+        _id = item["id"]
         color = COLOR_PALLETE[_id]
         # Create a rectangle around the object
         box_start_point = (int(box[0]), int(box[1]))  # left top corner
         box_end_point = (int(box[2]), int(box[3]))  # right bottom corner
         cv2.rectangle(img=image, pt1=box_start_point, pt2=box_end_point, color=color, thickness=2)
 
+        # Display ID of the box on the top of the rectangle
+        label_text = f"ID: {_id}"
+
+        # Get text size to know how long the "background rectangle" should be
+        (text_box_x, text_box_y), _ = cv2.getTextSize(
+            label_text, cv2.FONT_HERSHEY_SIMPLEX, LABEL_FONT_SCALE, LABEL_FONT_THICKNESS
+        )
+
+        label_x = box_start_point[0] + 5
+        label_y = box_start_point[1] + 5
+
+        # Create a rectangle around the text
+        cv2.rectangle(
+            img=image,
+            pt1=(label_x - 5, label_y + 5),
+            pt2=(label_x + text_box_x + 5, label_y - text_box_y - 5),
+            color=color,
+            thickness=cv2.FILLED,
+        )
+
+        # Display the text
+        cv2.putText(
+            img=image,
+            text=label_text,
+            org=(label_x, label_y),
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=LABEL_FONT_SCALE,
+            color=(0, 0, 0),
+            thickness=LABEL_FONT_THICKNESS,
+        )
 
     # Save image
     cv2.imwrite(f"{first_picture.img_name}_OUTPUT.jpg", image)

@@ -21,7 +21,7 @@ class DataFrame:
         tree = ET.parse(xml)
         root = tree.getroot()
 
-        all_boxes = []
+        boxes = []
 
         for obj in root.iter("object"):
             img_name = root.find("filename").text
@@ -38,9 +38,9 @@ class DataFrame:
             # Compute centroid
             centroid = ((xmin + xmax) / 2, (ymin + ymax) / 2)
 
-            all_boxes.append({"id": None, "box": box, "centroid": centroid})
+            boxes.append({"id": None, "box": box, "centroid": centroid})
 
-        return img_name, all_boxes
+        return img_name, boxes
 
     def _load_image(self, path):
         img_path = str((Path(path) / self.img_name).resolve())

@@ -10,13 +10,14 @@
 ```bash
 git clone
 cd konipy
+cp comp_tracking/.env.example comp_tracking/.env
 docker-compose build
 ```
 
 ## Run
 
 ```bash
-docker-compose visual up -d
+docker-compose up visual -d
 docker-compose run --rm track 
 ```
 
@@ -39,6 +40,7 @@ cd comp_tracking
 python3 -m venv .venv
 source .venv/bin/activate | .venv/Scripts/activate # Windows
 python -m pip install -r requirements.txt
+cp .env.example .env
 python main.py
 ```
 

@@ -5,6 +5,28 @@
 - Docker (<https://docs.docker.com/install/>)
 - docker-compose (<https://docs.docker.com/compose/install/>)
 
+## Problems
+
+### 1) Creating video wih opencv from images broke inside the docker container (OpenCV problem)
+
+> Temporary Fix:  
+> Creating video with ffmpeg works inside the docker container  
+> Linux:  
+>   `make create-video`  
+> Windows:  
+>   `docker run --rm -v $PWD/shop:/files jrottenberg/ffmpeg -y -framerate 5 -pattern_type glob -i '/files/*_OUTPUT.jpg' -c:v libx264 -pix_fmt yuv420p /files/output_video.mp4`
+
+### 2) Stil not great identifying the objects by IDs
+
+> Possible fix:  
+> time
+
+### 3) Missing tests
+
+> Fix:  
+> time
+
+
 ## Install
 
 ```bash
@@ -17,7 +39,7 @@ docker-compose build
 ## Run
 
 ```bash
-docker-compose up visual -d
+docker-compose up visual -d  # http://localhost:8989/docs for API docs
 docker-compose run --rm track 
 ```
 

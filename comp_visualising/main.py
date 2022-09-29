@@ -190,4 +190,4 @@ def draw_line(image, centroids, color):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=HOST, port=PORT, log_level=LOG_LEVEL, reload=HOT_RELOAD)
+    uvicorn.run("main:app", host=HOST, port=int(PORT), log_level=LOG_LEVEL, reload=bool(HOT_RELOAD))

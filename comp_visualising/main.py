@@ -4,6 +4,7 @@ import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from dotenv import load_dotenv
 
 import uvicorn
 import cv2
@@ -12,23 +13,19 @@ from fastapi import FastAPI, Response, HTTPException, Request
 from loguru import logger as log
 from logger_config import init_logging
 
-DEBUG = "True"
+# Load environment variables
+load_dotenv()
 
-if DEBUG == "True":
-    LOG_LEVEL = "debug"
-    HOT_RELOAD = bool("True")
-else:
-    LOG_LEVEL = "info"
-    HOT_RELOAD = bool("False")
+DEBUG = os.getenv("DEBUG", str(False))
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+HOT_RELOAD = os.getenv("HOT_RELOAD", str(False))
+HOST = os.getenv("HOST", "0.0.0.0")
+PORT = os.getenv("PORT", "8989")
 
 # CONSTANTS
-# App
-PORT = 8989
-HOST = "0.0.0.0"
 # Paths
 CURDIR = Path(__file__).parent
-PARENT_DIR = CURDIR.parent
-SHOP_DIR = PARENT_DIR / "shop"
+SHOP_DIR = CURDIR / "shop"
 # Drawing and video
 LABEL_FONT_SCALE = 0.5
 LABEL_FONT_THICKNESS = 1
@@ -44,6 +41,9 @@ COLOR_PALLETE = {
 }
 
 
+if DEBUG == "True":
+    HOST = "localhost"
+    SHOP_DIR = CURDIR.parent / "shop"
 
 
 

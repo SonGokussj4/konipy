@@ -56,18 +56,34 @@ class DataFrame:
         #     box['id'] = np.random.randint(0, 1000)
         for idx, box in enumerate(self.boxes):
             box["id"] = idx
+            box["previous_centroids"] = []
 
     def assign_nearest_ids(self, previous_boxes):
         """Assign IDs to the bounding boxes closes to the centroids"""
         for box in self.boxes:
             # Compute distance to all centroids
-            distances = []
-            for previous_box in previous_boxes:
-                distance = self._compute_distance(previous_box["centroid"], box["centroid"])
-                distances.append(distance)
+            distances = [
+                self._compute_distance(box["centroid"], previous_box["centroid"]) for previous_box in previous_boxes
+            ]
 
             # Assign the ID of the closest centroid
-            box["id"] = previous_boxes[np.argmin(distances)]["id"]
+            previous_box = previous_boxes[np.argmin(distances)]
+
+            if np.min(distances) < 150:
+                already_assigned_ids = [box["id"] for box in self.boxes]
+                if previous_box["id"] not in already_assigned_ids:
+                    # Assign the ID of the closest centroid
+                    box["id"] = previous_boxes[np.argmin(distances)]["id"]
+                else:
+                    # Assign the ID of the second closes centroid
+                    box["id"] = previous_boxes[np.argsort(distances)[1]]["id"]
+
+                box["previous_centroids"] = previous_box["previous_centroids"][-10:] + [box["centroid"]]
+            else:
+                # Assign a new ID
+                existing_ids = [previous_box["id"] for previous_box in previous_boxes]
+                box["id"] = max(existing_ids) + 1
+                box["previous_centroids"] = [box["centroid"]]
 
     def to_json(self):
         return {"img_name": self.img_name, "boxes": self.boxes}

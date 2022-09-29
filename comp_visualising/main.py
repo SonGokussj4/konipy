@@ -58,30 +58,35 @@ def read_root():
     return Response("The API is working")
 
 
-@app.post("/post-test")
-async def post_test(data: Request) -> Response:
+@app.post("/mark-pictures")
+async def mark_pictures(data: Request) -> Response:
     """Test POST request"""
     picture = await data.json()
+    img_name = Path(picture.get("img_name"))
+    img_path = SHOP_DIR / img_name.name
+    log.debug(f"img_path: {img_path}")
 
-    IMAGE_PATH = SHOP_DIR / picture.get("img_name")
-    log.debug(f"IMAGE_PATH: {IMAGE_PATH}")
-
-    image = cv2.imread(IMAGE_PATH.as_posix())
+    image = cv2.imread(img_path.as_posix())
 
     for item in picture.get("boxes"):
         box = item["box"]
         _id = item["id"]
+        # centroid = item["centroid"]
+        previous_centroids = item["previous_centroids"]
         color = COLOR_PALLETE[_id]
 
         draw_bounding_box(image, box, color)
         draw_label(image, box, _id, color)
+        draw_centroids(image, previous_centroids, color)
+        draw_line(image, previous_centroids, color)
 
     # Save image
-    image_path = f"{SHOP_DIR / picture.get('img_name')}_OUTPUT.jpg"
-    cv2.imwrite(image_path, image)
+    output_img_path = f"{SHOP_DIR / img_name.stem}_OUTPUT.jpg"
+    log.debug(f"output_img_path: {output_img_path}")
+    cv2.imwrite(output_img_path, image)
 
     return Response(
-        content=json.dumps({"output_path": image_path, "name": Path(image_path).stem, "message": "ok"}),
+        content=json.dumps({"output_path": output_img_path, "name": Path(output_img_path).stem, "message": "ok"}),
         media_type="application/json",
     )
 
@@ -93,6 +98,7 @@ async def message(data: Request) -> Response:
     msg = _data.get("message", "")
 
     if msg.lower() == "finished":
+        log.info("Received message: finished")
         response = create_video()
         return response
 
@@ -102,6 +108,7 @@ async def message(data: Request) -> Response:
 def create_video():
     """Create video from images"""
     # Convert images to video
+    log.debug("Creating video...")
     images = [img for img in os.listdir(SHOP_DIR) if img.endswith("OUTPUT.jpg")]
     frame = cv2.imread(os.path.join(SHOP_DIR, images[0]))
     height, width, _ = frame.shape
@@ -112,10 +119,13 @@ def create_video():
     video = cv2.VideoWriter(video_path, fourcc, VIDEO_FPS, size)
 
     for image in images:
-        video.write(cv2.imread(os.path.join(SHOP_DIR, image)))
+        img_path = os.path.join(SHOP_DIR, image)
+        video.write(cv2.imread(img_path))
 
     cv2.destroyAllWindows()
     video.release()
+
+    log.info(f"Video created: {video_path}")
 
     return Response(content=json.dumps({"video_path": video_path, "name": Path(video_path).stem, "message": "ok"}))
 
@@ -160,6 +170,22 @@ def draw_label(image, box, _id, color):
         thickness=LABEL_FONT_THICKNESS,
     )
 
+
+def draw_centroids(image, centroids, color):
+    """Draw centroid on the image"""
+    for centroid in centroids:
+        cv2.circle(img=image, center=(int(centroid[0]), int(centroid[1])), radius=3, color=color, thickness=-1)
+
+def draw_line(image, centroids, color):
+    """Draw line on the image"""
+    for i in range(len(centroids) - 1):
+        cv2.line(
+            img=image,
+            pt1=(int(centroids[i][0]), int(centroids[i][1])),
+            pt2=(int(centroids[i + 1][0]), int(centroids[i + 1][1])),
+            color=color,
+            thickness=2,
+        )
 
 
 

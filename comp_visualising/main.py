@@ -17,7 +17,7 @@ from logger_config import init_logging
 load_dotenv()
 
 DEBUG = os.getenv("DEBUG", str(False))
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
 HOT_RELOAD = os.getenv("HOT_RELOAD", str(False))
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = os.getenv("PORT", "8989")

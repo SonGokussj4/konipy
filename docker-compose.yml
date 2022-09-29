@@ -6,14 +6,18 @@ services:
     build: comp_tracking/
     networks:
       - konipynet
+    volumes:
+      - ./shop:/app/shop
 
   visual:
     build: comp_visualising/
     restart: unless-stopped
     networks:
       - konipynet
-    ports:
-      - "8989:8989"
+    # ports:
+    #   - "8989:8989"
+    volumes:
+      - ./shop:/app/shop
 
 
 networks:

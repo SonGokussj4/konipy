@@ -9,30 +9,38 @@
 
 ### 1) Creating video wih opencv from images broke inside the docker container (OpenCV problem)
 
-> Temporary Fix:  
-> Creating video with ffmpeg works inside the docker container  
-> Linux:  
->   `make create-video`  
-> Windows:  
->   `docker run --rm -v $PWD/shop:/files jrottenberg/ffmpeg -y -framerate 5 -pattern_type glob -i '/files/*_OUTPUT.jpg' -c:v libx264 -pix_fmt yuv420p /files/output_video.mp4`
+> ### - Temporary Fix
+>
+> ---
+>
+> Creating video with ffmpeg works inside the docker container  (LINUX: `make create-video`)  
+>
+> `docker run --rm -v $PWD/shop:/files jrottenberg/ffmpeg -y -framerate 5 -pattern_type glob -i '/files/*_OUTPUT.jpg' -c:v libx264 -pix_fmt yuv420p /files/output_video.mp4`
 
-### 2) Stil not great identifying the objects by IDs
+### 2) Stil not great at keeping up with objects by IDs
 
-> Possible fix:  
-> time
+> ###  - Possible fix
+>
+> ---
+>
+> Time
 
 ### 3) Missing tests
 
-> Fix:  
-> time
-
+> ###  - Fix
+>
+> ---
+>
+> Time  
+> python pytest lib <https://docs.pytest.org/en/latest/>
 
 ## Install
 
 ```bash
-git clone
+git clone https://github.com/SonGokussj4/konipy.git
 cd konipy
-cp comp_tracking/.env.example comp_tracking/.env
+cp comp_tracking/.env.example comp_tracking/.env  # possibly edit the .env file
+cp comp_visualising/.env.example comp_visualising/.env  # possibly edit the .env file
 docker-compose build
 ```
 
